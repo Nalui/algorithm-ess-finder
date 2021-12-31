@@ -1,15 +1,45 @@
 import sympy as sy
-import TwoStrategies as twos
 
 def findEss (a):
     n = a.shape[0]
     if n == 2:
-        ess = twos.twoStrategies(a)
+        ess = twoStrategies(a)
     elif n > 2:
         ess = nStrategies(a,n)
     else: 
         return "ERROR"
     return ess
+
+def twoStrategies(a):
+    a11 = a[0]
+    a12 = a[1]
+    a21 = a[2]
+    a22 = a[3]
+    dif =  a11 - a12 - a21 + a22
+    if dif == 0:
+        if  a11 > a21:
+            return [[1,0]]
+        elif a11 < a21:
+            return [[0,1]]
+        elif a11 == a21:
+            return []
+    q1 = (a22 - a12)/dif
+    q2 = (a11 - a21)/dif
+    if q1 < 0 or q1 > 1: 
+        if a11 > a21 and a22 < a12:
+            return [[1,0]]
+        elif a11 < a21 and a22 > a12:
+            return [[0,1]]
+    elif dif < 0: # q1 in [0,1]
+        return [[q1,q2]]
+    elif dif > 0: # q1 in [0,1]
+        if a11 > a21 and a22 > a12:
+            return [[1,0],[0,1]]
+        if a11 > a21 and a22 == a12:
+            return [[1,0]]
+        if a11 == a21 and a22 > a12:
+            return [[0,1]]
+    return False
 
 def nStrategies(a, I):
     ess = []
@@ -23,20 +53,19 @@ def nStrategies(a, I):
         for i in range(I-1):
             parciais.append(sy.diff(w[0], y[i]))
 
-        solucaoSistema = sy.solve(parciais, x[:I-1]) # I - 1 variaveis
+        solucaoSistema = sy.solve(parciais, x[:I-1])
 
         classificaSolucao = len(solucaoSistema)
-        if classificaSolucao == I-1: # se a solução for unica
+        if classificaSolucao == I-1: 
             solucaoSistema = inDelta(solucaoSistema)
             if solucaoSistema:
                 if isEss(solucaoSistema, a):
                     ess.append(solucaoSistema)
                     return ess
-        elif classificaSolucao == 1 and inDeltaMultiple(solucaoSistema): #ta tudo errado aqui
-            #se a solução for possivel indeterminada e possuir uma parte pertencente a delta
-            if isEss(solucaoSistema):
-                ess.append(solucaoSistema)
-                return ess
+        # elif classificaSolucao == 1 and inDeltaMultiple(solucaoSistema): 
+        #     if isEss(solucaoSistema, a):
+        #         ess.append(solucaoSistema)
+        #         return ess
 
         I = I - 1
         essStep3 = nStrategies(a, I)
@@ -44,7 +73,7 @@ def nStrategies(a, I):
             ess.append(i)
         return ess
 
-    if I < n: #TODO verificar se não falta nada
+    if I < n:
         for J in range(n):
             aJ = a[:,:]
             aJ.col_del(J)
@@ -81,7 +110,6 @@ def extendSolution(solucaoSistema, J, n):
     return solucaoExpandida
 
 def inDelta(solucaoSistema):
-    #verifica se a solução pertence a delta (0<=xi<=1) e traz o xn
     sum = 0
     vetor = []
     for i in solucaoSistema:
@@ -110,7 +138,7 @@ def isEss(x, a):
         if dif == 0:
             if x != y:
                 dif2 = ((x - y)*a*y.T)[0]
-                if dif2 < 0:
+                if dif2 <= 0:
                     return False
         y[0,i] = 0
     return True

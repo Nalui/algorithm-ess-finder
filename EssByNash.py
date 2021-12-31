@@ -4,14 +4,14 @@ import nashpy as nash
 def essByNash(a):
     ess = []
     A = a[:]
-    B = a[:]
+    B = np.transpose(a)
     game = nash.Game(A, B)
-    for x in game.support_enumeration():
+    for x in game.vertex_enumeration():
         if isEss(x[0],np.array(a)):
             ess.append(x[0])
     return ess
 
-def isEss(x, a): #caso 2x2
+def isEss(x, a): 
     n = len(x)
     y =np.zeros(n)
     for i in range(n):
