@@ -1,13 +1,12 @@
 import sympy as sy
 
 def findEss (a):
+    a = sy.Matrix(a)
     n = a.shape[0]
     if n == 2:
         ess = twoStrategies(a)
     elif n > 2:
         ess = nStrategies(a,n)
-    else: 
-        return "ERROR"
     return ess
 
 def twoStrategies(a):
@@ -23,8 +22,8 @@ def twoStrategies(a):
             return [[0,1]]
         elif a11 == a21:
             return []
-    q1 = (a22 - a12)/dif
-    q2 = (a11 - a21)/dif
+    q1 = sy.Rational(a22 - a12,dif)
+    q2 = sy.Rational(a11 - a21,dif)
     if q1 < 0 or q1 > 1: 
         if a11 > a21 and a22 < a12:
             return [[1,0]]
@@ -62,10 +61,8 @@ def nStrategies(a, I):
                 if isEss(solucaoSistema, a):
                     ess.append(solucaoSistema)
                     return ess
-        # elif classificaSolucao == 1 and inDeltaMultiple(solucaoSistema): 
-        #     if isEss(solucaoSistema, a):
-        #         ess.append(solucaoSistema)
-        #         return ess
+        elif classificaSolucao < I-1 and classificaSolucao > 0:
+            return 'not implemented'
 
         I = I - 1
         essStep3 = nStrategies(a, I)
@@ -97,18 +94,6 @@ def createVector(n, var):
     vector = sy.Matrix([vector])
     return vector
 
-
-def extendSolution(solucaoSistema, J, n): 
-    solucaoExpandida = []
-    k = 0
-    for i in range(n):
-        if i == J:
-            solucaoExpandida.append(0)
-        else:
-            solucaoExpandida.append(solucaoSistema[k])
-            k += 1
-    return solucaoExpandida
-
 def inDelta(solucaoSistema):
     sum = 0
     vetor = []
@@ -122,9 +107,6 @@ def inDelta(solucaoSistema):
         return False
     vetor.append(1 - sum)      
     return vetor
-
-def inDeltaMultiple(solucaoSistema): #TODO tentar contemplar esse caso também
-    return False
 
 def isEss(x, a):
     n = len(x)
@@ -142,3 +124,14 @@ def isEss(x, a):
                     return False
         y[0,i] = 0
     return True
+
+def extendSolution(solucaoSistema, J, n): 
+    solucaoExpandida = []
+    k = 0
+    for i in range(n):
+        if i == J:
+            solucaoExpandida.append(0)
+        else:
+            solucaoExpandida.append(solucaoSistema[k])
+            k += 1
+    return solucaoExpandida

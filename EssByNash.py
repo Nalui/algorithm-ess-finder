@@ -1,7 +1,9 @@
 import numpy as np
+import sympy as sy
 import nashpy as nash
 
 def essByNash(a):
+    a = np.array(a)
     ess = []
     A = a[:]
     B = np.transpose(a)
