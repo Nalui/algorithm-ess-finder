@@ -1,2 +1,5 @@
 # algorithm-ess-finder
-The implementation of the algorithm published in the Journal of Computational and Applied Mathematics (Zhi Lin, 2008) for finding evolutionary  stable strategies in single-population evolutionary games
+
+O projetojeto ess-finder implementa os métodos _FindEss_ e _EssByNahs_, que encontram as estratégias evolutivamente estávies de jogos evolutivos simétricos travados por dois indi-
+víduos de uma mesma população.
+
